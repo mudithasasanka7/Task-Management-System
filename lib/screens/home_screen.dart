@@ -7,7 +7,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<Map<String, String>> timeEntries = []; // Store time entries
 
   @override
   void initState() {
@@ -15,98 +14,83 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  // Function to add new entry
-  void addTimeEntry(Map<String, String> entry) {
-    setState(() {
-      timeEntries.add(entry);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Time Tracker'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: 'Projects'),
-            Tab(text: 'Tasks'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.timer, size: 50, color: Colors.white),
+                  SizedBox(height: 10),
+                  Text(
+                    'Time Tracker Menu',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.folder),
+              title: Text('Projects'),
+              onTap: () {
+                _tabController.animateTo(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.task),
+              title: Text('Tasks'),
+              onTap: () {
+                _tabController.animateTo(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Project Management'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                Navigator.pushNamed(context, '/projectManagement'); // Navigate to Project Management
+              },
+            ),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          // Projects Tab
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.folder_open, // Folder icon for empty state
-                  size: 100,
-                  color: Colors.grey,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'No projects added yet!',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/addEntry').then((newEntry) {
-                      if (newEntry != null) {
-                        addTimeEntry(newEntry as Map<String, String>);
-                      }
-                    });
-                  },
-                  child: Text('Add Your First Project'),
-                ),
-              ],
-            ),
-          ),
-          // Tasks Tab
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.task_alt, // Task icon for empty state
-                  size: 100,
-                  color: Colors.grey,
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'No tasks added yet!',
-                  style: TextStyle(fontSize: 18, color: Colors.grey),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate to the Add Task screen (to be added later)
-                  },
-                  child: Text('Add Your First Task'),
-                ),
-              ],
-            ),
-          ),
-          // Time Entries Tab (New tab to display entries)
-          ListView.builder(
-            itemCount: timeEntries.length,
-            itemBuilder: (context, index) {
-              final entry = timeEntries[index];
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: ListTile(
-                  title: Text('Project: ${entry['project']}'),
-                  subtitle: Text('Task: ${entry['task']}\nDate: ${entry['date']}\nTime: ${entry['time']} hours'),
-                  isThreeLine: true,
-                ),
-              );
-            },
-          ),
+          _buildEmptyState(Icons.folder_open, 'No projects added yet!'),
+          _buildEmptyState(Icons.task, 'No tasks added yet!'),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/addEntry'); // Navigate to Add Entry screen
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(IconData icon, String text) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 100, color: Colors.grey),
+          SizedBox(height: 20),
+          Text(text, style: TextStyle(fontSize: 18, color: Colors.grey)),
         ],
       ),
     );

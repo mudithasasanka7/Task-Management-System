@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
-import 'screens/add_entry_screen.dart'; // Import the new screen
+import 'screens/add_entry_screen.dart'; 
+import 'screens/project_management_screen.dart';
+import 'screens/task_management_screen.dart'; // Import Task Management Screen
 
 void main() {
   runApp(TimeTrackerApp());
@@ -17,7 +19,9 @@ class TimeTrackerApp extends StatelessWidget {
       ),
       home: HomeScreen(), // Initial screen
       routes: {
-        '/addEntry': (context) => AddEntryScreen(), // Named route for AddEntryScreen
+        '/addEntry': (context) => AddEntryScreen(),
+        '/projectManagement': (context) => ProjectManagementScreen(),
+        '/taskManagement': (context) => TaskManagementScreen(), // Added Task Management route
       },
     );
   }
